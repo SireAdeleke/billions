@@ -1,0 +1,40 @@
+const puppeteer = require('puppeteer');
+
+(async () => {
+  // Launch browser in headful mode (with UI)
+  const browser = await puppeteer.launch({
+    headless: false, // Run with visible UI
+    slowMo: 50, // Slow down interactions to observe
+    args: ['--start-maximized']
+  });
+
+  const page = await browser.newPage();
+  await page.goto('https://accounts.google.com/');
+
+  // Wait for the username field and type the username
+  await page.waitForSelector('input[type="email"]', { visible: true });
+  await page.type('input[type="email"]', 'your_email@gmail.com');
+  await page.click('#identifierNext');
+  
+  // Wait for the password field and input the password (you can skip if using 2FA)
+  await page.waitForSelector('input[type="password"]', { visible: true });
+  await page.type('input[type="password"]', 'your_password');
+  await page.click('#passwordNext');
+  
+  // Wait for the 2FA input field, if applicable
+  await page.waitForSelector('input[type="tel"]', { visible: true });
+  console.log('Enter the 2FA code manually if prompted...');
+  
+  // Pause the script so you can input 2FA manually
+  await page.waitForTimeout(30000);  // Wait for 30 seconds or more depending on how long it takes you
+  
+  // Proceed with further steps if needed
+  // Example: Click a button after 2FA
+  // await page.waitForSelector('button[type="submit"]', { visible: true });
+  // await page.click('button[type="submit"]');
+  
+  // Do any further tasks here after 2FA
+
+  // Uncomment this if you want to close the browser after a task
+  // await browser.close();
+})();
